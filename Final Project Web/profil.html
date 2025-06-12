@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore-compat.js"></script>
     <script src="./scripts/firebase-config.js"></script>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script>
@@ -65,12 +66,12 @@
             <button id="user-menu-button" class="flex items-center space-x-2">
               <div class="w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
                 <img
-                  src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20an%20Indonesian%20young%20man%20with%20short%20black%20hair%20wearing%20a%20casual%20outfit%2C%20smiling%20at%20the%20camera%20with%20a%20friendly%20expression.%20The%20photo%20has%20a%20clean%20white%20background%20and%20is%20well-lit%20with%20soft%2C%20natural%20lighting.%20The%20man%20appears%20confident%20and%20approachable.&width=100&height=100&seq=user1&orientation=squarish"
+                  src="https://i.pinimg.com/736x/07/fb/34/07fb3452c4640d881a16d08c2e314f3e.jpg"
                   alt="User"
                   class="w-full h-full object-cover object-top"
                 />
               </div>
-              <span class="text-gray-700">Reza Pratama</span>
+              <span class="text-gray-700" id="user-display-name">...</span>
               <i class="ri-arrow-down-s-line text-gray-500"></i>
             </button>
             <div
@@ -93,29 +94,31 @@
           <div class="bg-primary h-32 relative"></div>
           <div class="px-6 pb-6">
             <div
-              class="flex flex-col md:flex-row items-center md:items-end -mt-16 mb-6"
+              class="flex flex-col md:flex-row items-center md:items-end -mt-16 mb-6 gap-4"
             >
               <div class="w-32 h-32 bg-white rounded-full p-1 shadow-lg mb-4 md:mb-0 z-10 relative">
                 <img
-                  src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20an%20Indonesian%20young%20man%20with%20short%20black%20hair%20wearing%20a%20casual%20outfit%2C%20smiling%20at%20the%20camera%20with%20a%20friendly%20expression.%20The%20photo%20has%20a%20clean%20white%20background%20and%20is%20well-lit%20with%20soft%2C%20natural%20lighting.%20The%20man%20appears%20confident%20and%20approachable.&width=200&height=200&seq=user2&orientation=squarish"
+                  src="https://i.pinimg.com/736x/07/fb/34/07fb3452c4640d881a16d08c2e314f3e.jpg"
                   alt="User"
                   class="w-full h-full object-cover object-top rounded-full"
                 />
               </div>
               <div class="md:ml-6 text-center md:text-left">
-                <h1 class="text-2xl font-bold text-gray-900">Reza Pratama</h1>
-                <p class="text-gray-600">reza.pratama@email.com</p>
+                <h1 class="text-2xl font-bold text-gray-900" id="display-name">...</h1>
+                <p class="text-gray-600" id="display-email">...</p>
               </div>
-              <div class="md:ml-auto mt-4 md:mt-0">
-                <button
-                  class="bg-primary text-white px-4 py-2 !rounded-button hover:bg-blue-600 whitespace-nowrap"
-                >
+              <div class="md:ml-auto mt-4 md:mt-0 flex flex-wrap justify-center md:justify-end gap-2 min-w-[140px]">
+                <button id="edit-profil-btn" class="bg-primary text-white px-4 py-2 !rounded-button hover:bg-blue-600 whitespace-nowrap">
                   Edit Profil
                 </button>
+                <button id="simpan-profil-btn" class="bg-secondary text-white px-4 py-2 !rounded-button hover:bg-green-600 whitespace-nowrap hidden">
+                 Simpan
+                </button>
+              </div>
               </div>
             </div>
             <div class="border-t border-gray-200 pt-6">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 pb-6">
                 <div>
                   <h3 class="text-lg font-semibold text-gray-900 mb-4">
                     Informasi Pribadi
@@ -123,23 +126,23 @@
                   <div class="space-y-3">
                     <div>
                       <p class="text-sm text-gray-500">Nama Lengkap</p>
-                      <p class="text-gray-900">Reza Pratama</p>
+                      <input id="nama-lengkap" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Email</p>
-                      <p class="text-gray-900">reza.pratama@email.com</p>
+                      <input id="email" type="email" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Nomor Telepon</p>
-                      <p class="text-gray-900">+62 812 3456 7890</p>
+                      <input id="telepon" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Tanggal Lahir</p>
-                      <p class="text-gray-900">15 Agustus 1992</p>
+                      <input id="tanggal-lahir" type="date" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Jenis Kelamin</p>
-                      <p class="text-gray-900">Laki-laki</p>
+                      <input id="jenis-kelamin" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                   </div>
                 </div>
@@ -150,23 +153,23 @@
                   <div class="space-y-3">
                     <div>
                       <p class="text-sm text-gray-500">Golongan Darah</p>
-                      <p class="text-gray-900">O+</p>
+                      <input id="golongan-darah" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Tinggi Badan</p>
-                      <p class="text-gray-900">175 cm</p>
+                      <input id="tinggi-badan" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Berat Badan</p>
-                      <p class="text-gray-900">68 kg</p>
+                      <input id="berat-badan" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Alergi</p>
-                      <p class="text-gray-900">Tidak Ada</p>
+                      <input id="alergi" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Kondisi Medis</p>
-                      <p class="text-gray-900">Tidak Ada</p>
+                      <input id="kondisi-medis" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                   </div>
                 </div>
@@ -177,19 +180,19 @@
                   <div class="space-y-3">
                     <div>
                       <p class="text-sm text-gray-500">Nama</p>
-                      <p class="text-gray-900">Siti Rahayu</p>
+                      <input id="emergency-nama" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Hubungan</p>
-                      <p class="text-gray-900">Istri</p>
+                      <input id="emergency-hubungan" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Nomor Telepon</p>
-                      <p class="text-gray-900">+62 812 9876 5432</p>
+                      <input id="emergency-telepon" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                     <div>
                       <p class="text-sm text-gray-500">Email</p>
-                      <p class="text-gray-900">siti.rahayu@email.com</p>
+                      <input id="emergency-email" type="text" class="text-gray-900 w-full bg-transparent focus:outline-none" disabled />
                     </div>
                   </div>
                 </div>

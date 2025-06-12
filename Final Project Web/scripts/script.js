@@ -12,9 +12,7 @@ loginLink.addEventListener('click', () => {
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {    
-    window.location.href = "beranda.html";
-  } else {
-    
+    console.log("User login:", user.email);
   }
 });
 
@@ -37,17 +35,44 @@ loginForm.addEventListener('submit', function(e) {
         });
 });
 
-//REGISTER
+// REGISTER (REVISI)
 registerForm.addEventListener('submit', function(e) {
-    e.preventDefault();    
+    e.preventDefault();
+
+    // Ambil nilai input
+    const username = registerForm.querySelector('input[type="text"]').value;
     const email = registerForm.querySelector('input[type="email"]').value;
     const password = registerForm.querySelector('input[type="password"]').value;
 
+    // Buat akun di Firebase Authentication
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            alert('Registrasi berhasil!');            
+            const user = userCredential.user;
+
+            // Simpan data pengguna ke Firestore
+            return firebase.firestore().collection("users").doc(user.uid).set({
+                name: username,
+                email: email,
+                phone: "",
+                birthdate: "",
+                gender: "",
+                bloodType: "",
+                height: "",
+                weight: "",
+                allergy: "",
+                medicalCondition: "",
+                emergencyName: "",
+                emergencyRelation: "",
+                emergencyPhone: "",
+                emergencyEmail: "",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        })
+        .then(() => {
+            alert("Registrasi berhasil!");
+            window.location.href = "dashboard.html";
         })
         .catch((error) => {
-            alert(error="The email address is already in use by another account.");
+            alert("Gagal mendaftar: " + error.message);
         });
 });
