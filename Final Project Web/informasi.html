@@ -6,6 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LifeAware - Monitoring Kesehatan</title>
 
+  <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-storage-compat.js"></script>
+  <script>
+    // Ganti dengan konfigurasi Firebase proyekmu
+    const firebaseConfig = {
+      apiKey: "AIzaSyAqxbTSJL347P9sNxnjb-7sOHMcWuJTFF8",
+      authDomain: "azzamfsta-9f8ff.firebaseapp.com",
+      databaseURL: "https://azzamfsta-9f8ff-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "azzamfsta-9f8ff",
+      storageBucket: "azzamfsta-9f8ff.firebasestorage.app",
+      messagingSenderId: "884937188666",
+      appId: "1:884937188666:web:856306b0ea0834f4eb5c03",
+      measurementId: "G-D5YZM3LNCC"
+    };
+
+    // Inisialisasi Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    } else {
+      firebase.app(); // if already initialized, use that one
+    }
+  </script>
+
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <script>
     tailwind.config = {
@@ -268,10 +293,14 @@
         <div class="relative">
           <button id="user-menu-button" class="flex items-center space-x-2">
             <div class="w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
-              <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20an%20Indonesian%20young%20man%20with%20short%20black%20hair%20wearing%20a%20casual%20outfit%2C%20smiling%20at%20the%20camera%20with%20a%20friendly%20expression.%20The%20photo%20has%20a%20clean%20white%20background%20and%20is%20well-lit%20with%20soft%2C%20natural%20lighting.%20The%20man%20appears%20confident%20and%20approachable.&width=100&height=100&seq=user1&orientation=squarish" alt="User" class="w-full h-full object-cover object-top" />
-            </div>
-            <span class="text-gray-700">Reza Pratama</span>
-            <i class="ri-arrow-down-s-line text-gray-500"></i>
+                <img
+                  src="https://i.pinimg.com/736x/07/fb/34/07fb3452c4640d881a16d08c2e314f3e.jpg"
+                  alt="User"
+                  class="w-full h-full object-cover object-top"
+                  id="header-profile-picture"
+                />
+              </div>
+            <span class="text-gray-700" id="header-user-display-name">...</span> <i class="ri-arrow-down-s-line text-gray-500"></i>
           </button>
           <div id="user-menu" class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg py-1 hidden z-50">
             <div class="border-t border-gray-100"></div>
@@ -290,155 +319,35 @@
         <h1 class="text-2xl font-bold text-gray-900">Informasi Kesehatan</h1>
         <div class="relative">
           <div class="flex items-center border border-gray-300 bg-white rounded-full px-4 py-2">
-            <i class="ri-search-line text-gray-400 mr-2"></i>
-            <input type="text" placeholder="Cari artikel..." class="border-none focus:outline-none text-sm w-56" />
+            <i class="ri-search-line text-gray-400 mr-2 cursor-pointer" id="search-button"></i>
+            <input type="text" placeholder="Cari artikel..." class="border-none focus:outline-none text-sm w-56" id="search-input" />
           </div>
         </div>
       </div>
 
       <div class="flex flex-wrap gap-2 mb-8">
-        <button class="bg-primary text-white px-4 py-2 !rounded-full whitespace-nowrap">Semua</button>
-        <button class="bg-white text-gray-700 px-4 py-2 !rounded-full hover:bg-gray-100 whitespace-nowrap">Jantung</button>
-        <button class="bg-white text-gray-700 px-4 py-2 !rounded-full hover:bg-gray-100 whitespace-nowrap">Pernapasan</button>
-        <button class="bg-white text-gray-700 px-4 py-2 !rounded-full hover:bg-gray-100 whitespace-nowrap">Nutrisi</button>
-        <button class="bg-white text-gray-700 px-4 py-2 !rounded-full hover:bg-gray-100 whitespace-nowrap">Olahraga</button>
-        <button class="bg-white text-gray-700 px-4 py-2 !rounded-full hover:bg-gray-100 whitespace-nowrap">Tidur</button>
+        <button class="bg-primary text-white px-4 py-2 !rounded-full whitespace-nowrap">Semua</button>        
       </div>
 
-      <div class="bg-white rounded shadow-md overflow-hidden mb-8">
-        <div class="md:flex">
-          <div class="md:w-1/2 h-64 md:h-auto">
-            <img src="https://readdy.ai/api/search-image?query=A%20doctor%20explaining%20heart%20health%20to%20a%20patient%2C%20showing%20a%20digital%20display%20of%20heart%20rate%20and%20blood%20pressure%20readings.%20The%20scene%20is%20in%20a%20modern%20medical%20office%20with%20clean%2C%20professional%20lighting.%20The%20doctor%20is%20wearing%20a%20white%20coat%20and%20is%20using%20visual%20aids%20to%20explain%20cardiovascular%20health%20in%20a%20patient-friendly%20way.%20The%20image%20has%20a%20medical%20and%20educational%20feel%20with%20warm%2C%20reassuring%20tones.&width=800&height=500&seq=article1&orientation=landscape" alt="Featured Article" class="w-full h-full object-cover object-top" />
-          </div>
-          <div class="md:w-1/2 p-6 md:p-8">
-            <div class="flex items-center mb-2">
-              <span class="bg-blue-100 text-primary text-xs px-2 py-1 rounded-full">Jantung</span>
-              <span class="text-gray-500 text-xs ml-2">17 Mei 2025</span>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">Memahami Detak Jantung: Indikator Penting Kesehatan Anda</h2>
-            <p class="text-gray-600 mb-6">Detak jantung adalah salah satu indikator vital terpenting dalam menilai kesehatan seseorang. Artikel ini menjelaskan apa itu detak jantung normal, faktor yang mempengaruhinya, dan bagaimana memantaunya untuk kesehatan jangka panjang.</p>
-            <button class="bg-primary text-white px-6 py-2 !rounded-button hover:bg-blue-600 whitespace-nowrap">Baca Selengkapnya</button>
-          </div>
-        </div>
+      <div id="featured-article-container" class="bg-white rounded shadow-md overflow-hidden mb-8">
+        <p class="p-6 text-center text-gray-500">Memuat artikel unggulan...</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white rounded shadow-md overflow-hidden">
-          <div class="h-48">
-            <img src="https://readdy.ai/api/search-image?query=A%20close-up%20of%20a%20pulse%20oximeter%20device%20attached%20to%20a%20finger%2C%20displaying%20oxygen%20saturation%20levels%20on%20its%20screen.%20The%20image%20shows%20the%20digital%20reading%20clearly%20visible%20with%20good%20lighting.%20The%20background%20is%20slightly%20blurred%20but%20suggests%20a%20home%20or%20medical%20setting.%20The%20composition%20focuses%20on%20the%20technology%20and%20its%20practical%20application%20for%20monitoring%20blood%20oxygen%20levels.&width=400&height=250&seq=article2&orientation=landscape" alt="Article" class="w-full h-full object-cover object-top" />
-          </div>
-          <div class="p-6">
-            <div class="flex items-center mb-2">
-              <span class="bg-blue-100 text-primary text-xs px-2 py-1 rounded-full">SpO2</span>
-              <span class="text-gray-500 text-xs ml-2">15 Mei 2025</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Pentingnya Memantau Saturasi Oksigen</h3>
-            <p class="text-gray-600 mb-4">Mengetahui kadar oksigen dalam darah Anda dapat membantu mendeteksi masalah pernapasan sejak dini.</p>
-            <button class="text-primary hover:text-blue-700 text-sm flex items-center">
-              <span>Baca Selengkapnya</span>
-              <i class="ri-arrow-right-s-line ml-1"></i>
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded shadow-md overflow-hidden">
-          <div class="h-48">
-            <img src="https://readdy.ai/api/search-image?query=A%20person%20taking%20their%20temperature%20with%20a%20digital%20thermometer.%20The%20image%20shows%20a%20close-up%20of%20the%20thermometer%20display%20showing%20a%20normal%20temperature%20reading.%20The%20scene%20is%20in%20a%20home%20setting%20with%20soft%2C%20natural%20lighting.%20The%20composition%20focuses%20on%20the%20device%20and%20the%20reading%2C%20with%20the%20persons%20face%20partially%20visible%20to%20maintain%20privacy%20while%20showing%20the%20context%20of%20temperature%20measurement.&width=400&height=250&seq=article3&orientation=landscape" alt="Article" class="w-full h-full object-cover object-top" />
-          </div>
-          <div class="p-6">
-            <div class="flex items-center mb-2">
-              <span class="bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded-full">Suhu</span>
-              <span class="text-gray-500 text-xs ml-2">12 Mei 2025</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Suhu Tubuh: Apa yang Normal dan Kapan Harus Khawatir</h3>
-            <p class="text-gray-600 mb-4">Memahami rentang suhu tubuh normal dan kapan perubahan suhu menjadi tanda masalah kesehatan.</p>
-            <button class="text-primary hover:text-blue-700 text-sm flex items-center">
-              <span>Baca Selengkapnya</span>
-              <i class="ri-arrow-right-s-line ml-1"></i>
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded shadow-md overflow-hidden">
-          <div class="h-48">
-            <img src="https://readdy.ai/api/search-image?query=A%20person%20jogging%20in%20a%20park%20during%20early%20morning%20or%20sunset%20with%20a%20fitness%20tracker%20or%20smartwatch%20visible%20on%20their%20wrist.%20The%20image%20shows%20them%20checking%20their%20heart%20rate%20on%20the%20device%20while%20exercising.%20The%20scene%20has%20beautiful%20natural%20lighting%20with%20golden%20hour%20tones.%20The%20composition%20captures%20both%20the%20activity%20and%20the%20technology%20used%20to%20monitor%20health%20metrics%20during%20exercise.&width=400&height=250&seq=article4&orientation=landscape" alt="Article" class="w-full h-full object-cover object-top" />
-          </div>
-          <div class="p-6">
-            <div class="flex items-center mb-2">
-              <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">Olahraga</span>
-              <span class="text-gray-500 text-xs ml-2">10 Mei 2025</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Olahraga dan Detak Jantung: Menemukan Zona Target Anda</h3>
-            <p class="text-gray-600 mb-4">Panduan lengkap tentang cara menggunakan detak jantung untuk mengoptimalkan latihan Anda.</p>
-            <button class="text-primary hover:text-blue-700 text-sm flex items-center">
-              <span>Baca Selengkapnya</span>
-              <i class="ri-arrow-right-s-line ml-1"></i>
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded shadow-md overflow-hidden">
-          <div class="h-48">
-            <img src="https://readdy.ai/api/search-image?query=A%20person%20sleeping%20peacefully%20in%20bed%20while%20wearing%20a%20small%2C%20unobtrusive%20sleep%20tracking%20device%20on%20their%20wrist.%20The%20room%20is%20dimly%20lit%20with%20soft%2C%20ambient%20lighting%20suggesting%20nighttime.%20The%20composition%20focuses%20on%20the%20persons%20relaxed%20sleeping%20position%20and%20the%20device%20that%20monitors%20their%20sleep%20patterns.%20The%20scene%20conveys%20comfort%20and%20the%20modern%20approach%20to%20tracking%20sleep%20health.&width=400&height=250&seq=article5&orientation=landscape" alt="Article" class="w-full h-full object-cover object-top" />
-          </div>
-          <div class="p-6">
-            <div class="flex items-center mb-2">
-              <span class="bg-purple-100 text-purple-600 text-xs px-2 py-1 rounded-full">Tidur</span>
-              <span class="text-gray-500 text-xs ml-2">8 Mei 2025</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Kualitas Tidur dan Kesehatan Jantung</h3>
-            <p class="text-gray-600 mb-4">Bagaimana pola tidur memengaruhi kesehatan jantung Anda dan tips untuk meningkatkan kualitas tidur.</p>
-            <button class="text-primary hover:text-blue-700 text-sm flex items-center">
-              <span>Baca Selengkapnya</span>
-              <i class="ri-arrow-right-s-line ml-1"></i>
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded shadow-md overflow-hidden">
-          <div class="h-48">
-            <img src="https://readdy.ai/api/search-image?query=A%20colorful%2C%20healthy%20meal%20on%20a%20plate%20featuring%20a%20balance%20of%20vegetables%2C%20lean%20protein%2C%20and%20whole%20grains.%20The%20image%20shows%20a%20well-composed%2C%20appetizing%20dish%20with%20vibrant%20colors%20from%20fresh%20ingredients.%20The%20scene%20is%20well-lit%20with%20natural%20lighting%20on%20a%20clean%20table%20setting.%20The%20composition%20emphasizes%20the%20nutritional%20variety%20and%20appeal%20of%20a%20heart-healthy%20diet.&width=400&height=250&seq=article6&orientation=landscape" alt="Article" class="w-full h-full object-cover object-top" />
-          </div>
-          <div class="p-6">
-            <div class="flex items-center mb-2">
-              <span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">Nutrisi</span>
-              <span class="text-gray-500 text-xs ml-2">5 Mei 2025</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Makanan untuk Jantung Sehat</h3>
-            <p class="text-gray-600 mb-4">Panduan nutrisi lengkap untuk menjaga kesehatan jantung dan meningkatkan fungsi kardiovaskular.</p>
-            <button class="text-primary hover:text-blue-700 text-sm flex items-center">
-              <span>Baca Selengkapnya</span>
-              <i class="ri-arrow-right-s-line ml-1"></i>
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded shadow-md overflow-hidden">
-          <div class="h-48">
-            <img src="https://readdy.ai/api/search-image?query=A%20person%20practicing%20meditation%20or%20deep%20breathing%20exercises%20in%20a%20peaceful%20setting.%20The%20image%20shows%20them%20in%20a%20relaxed%20posture%20with%20eyes%20closed%2C%20focusing%20on%20their%20breath.%20The%20scene%20has%20soft%2C%20calming%20lighting%20with%20natural%20elements%20like%20plants%20or%20water%20in%20the%20background.%20The%20composition%20conveys%20tranquility%20and%20mindfulness%20as%20approaches%20to%20stress%20management%20and%20heart%20health.&width=400&height=250&seq=article7&orientation=landscape" alt="Article" class="w-full h-full object-cover object-top" />
-          </div>
-          <div class="p-6">
-            <div class="flex items-center mb-2">
-              <span class="bg-blue-100 text-primary text-xs px-2 py-1 rounded-full">Stres</span>
-              <span class="text-gray-500 text-xs ml-2">2 Mei 2025</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">Mengelola Stres untuk Kesehatan Jantung</h3>
-            <p class="text-gray-600 mb-4">Teknik praktis untuk mengurangi stres dan dampak positifnya pada kesehatan kardiovaskular.</p>
-            <button class="text-primary hover:text-blue-700 text-sm flex items-center">
-              <span>Baca Selengkapnya</span>
-              <i class="ri-arrow-right-s-line ml-1"></i>
-            </button>
-          </div>
-        </div>
+      <div id="articles-grid-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <p class="p-6 text-center text-gray-500 col-span-full">Memuat artikel lainnya...</p>
       </div>
 
       <div class="flex justify-center">
-        <nav class="flex items-center space-x-1">
-          <a href="#" class="px-4 py-2 text-gray-500 bg-white rounded hover:bg-gray-100">
-            <i class="ri-arrow-left-s-line"></i>
+        <nav class="flex items-center space-x-1" id="pagination-nav"> <a href="#" class="px-4 py-2 text-gray-500 bg-white rounded hover:bg-gray-100" id="prev-page-btn"> <i class="ri-arrow-left-s-line"></i>
           </a>
-          <a href="#" class="px-4 py-2 text-white bg-primary rounded">1</a>
-          <a href="#" class="px-4 py-2 text-gray-700 bg-white rounded hover:bg-gray-100">2</a>
-          <a href="#" class="px-4 py-2 text-gray-700 bg-white rounded hover:bg-gray-100">3</a>
-          <a href="#" class="px-4 py-2 text-gray-700 bg-white rounded hover:bg-gray-100">4</a>
-          <a href="#" class="px-4 py-2 text-gray-700 bg-white rounded hover:bg-gray-100">5</a>
-          <a href="#" class="px-4 py-2 text-gray-500 bg-white rounded hover:bg-gray-100">
-            <i class="ri-arrow-right-s-line"></i>
+          <div id="page-numbers-container" class="flex space-x-1">
+            <a href="#" class="px-4 py-2 text-white bg-primary rounded" data-page="1">1</a>
+            <a href="#" class="px-4 py-2 text-gray-700 bg-white rounded hover:bg-gray-100" data-page="2">2</a>
+            <a href="#" class="px-4 py-2 text-gray-700 bg-white rounded hover:bg-gray-100" data-page="3">3</a>
+            <a href="#" class="px-4 py-2 text-gray-700 bg-white rounded hover:bg-gray-100" data-page="4">4</a>
+            <a href="#" class="px-4 py-2 text-gray-700 bg-white rounded hover:bg-gray-100" data-page="5">5</a>
+          </div>
+          <a href="#" class="px-4 py-2 text-gray-500 bg-white rounded hover:bg-gray-100" id="next-page-btn"> <i class="ri-arrow-right-s-line"></i>
           </a>
         </nav>
       </div>
